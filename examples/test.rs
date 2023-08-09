@@ -2,5 +2,5 @@ use strike::prelude::*;
 use strike::secrets::TOKEN;
 
 fn main() {
-    DiscordApp::new(TOKEN);
+    DiscordApp::new(TOKEN).run();
 }
