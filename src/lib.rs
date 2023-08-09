@@ -1,12 +1,13 @@
 #![feature(async_closure)]
 
+pub mod events;
 pub mod heartbeat;
 pub mod prelude;
 #[cfg(debug_assertions)]
 pub mod secrets;
 pub mod types;
 
-use crate::heartbeat::{get_gateway, read_gateway};
+use crate::events::{get_gateway, read_gateway};
 use anyhow::{anyhow, Result};
 use bevy_ecs::prelude::*;
 use deref_derive::Deref;
