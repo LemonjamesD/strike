@@ -21,12 +21,17 @@
         targets.${target}.latest.rust-std
       ];
       pkgs = import nixpkgs {
-         inherit system;
+        overlays = [
+          (_: super: let pkgs = fenix.inputs.nixpkgs.legacyPackages.${super.system}; in fenix.overlays.default pkgs pkgs)
+        ];
+        inherit system;
       };
       buildInputs = with pkgs; [
         cargo-expand
         pkgsCross.mingwW64.buildPackages.gcc
         glibc_multi
+        openssl
+        rust-analyzer-nightly
       ];
       src = ./.;
       copySources = [

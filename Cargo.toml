@@ -8,4 +8,14 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.72"
 bevy_ecs = "0.11.0"
+deref-derive = "0.1.0"
+futures = "0.3.28"
 regex = "1.9.3"
+reqwest = { version = "0.11.18", features = ["serde_json", "json"] }
+serde_json = "1.0.104"
+tokio = { version = "1.29.1", features = ["rt", "rt-multi-thread"] }
+tracing = "0.1.37"
+tracing-subscriber = "0.3.17"
+
+[dev-dependencies]
+tokio = "1.29.1"
