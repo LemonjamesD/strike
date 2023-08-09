@@ -100,7 +100,7 @@ pub trait GetDiscordToken {
     fn get_token(&self) -> Result<String> {
         match self.valid() {
             Ok(_) => Ok(self.to_token_string()?),
-            Err(why) => Err(why)
+            Err(why) => Err(why),
         }
     }
     fn valid(&self) -> Result<()> {
@@ -108,7 +108,7 @@ pub trait GetDiscordToken {
         let stringed = self.to_token_string()?;
         match regex.is_match(&stringed) {
             true => Ok(()),
-            false => Err(anyhow!("Failed to validate token!"))
+            false => Err(anyhow!("Failed to validate token!")),
         }
     }
 
@@ -120,7 +120,6 @@ impl<T: Display> GetDiscordToken for T {
     fn to_token_string(&self) -> Result<String> {
         Ok(format!("{self}"))
     }
-    
 }
 
 /// A marker struct that implements [`GetDiscordToken`] to tell it to use env
@@ -131,7 +130,7 @@ impl GetDiscordToken for UseEnv {
         let token = std::env::var("TOKEN");
         match token {
             Ok(token) => Ok(token),
-            Err(why) => Err(anyhow!(format!("Error getting `TOKEN` env var: {why:?}")))
+            Err(why) => Err(anyhow!(format!("Error getting `TOKEN` env var: {why:?}"))),
         }
     }
 }
