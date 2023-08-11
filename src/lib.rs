@@ -12,7 +12,7 @@ use crate::events::{get_gateway, read_gateway};
 use crate::prelude::*;
 use anyhow::{anyhow, Result};
 use deref_derive::Deref;
-use events::{read_events, setup_events, EventsPlugin, FlushEvents, GatewayEvents};
+use events::EventsPlugin;
 use regex::Regex;
 use std::fmt::Display;
 use tokio::runtime::Runtime;
@@ -39,13 +39,9 @@ impl DiscordAppPlugin {
 
 impl Plugin for DiscordAppPlugin {
     fn build(&self, app: &mut App) {
-        let subscriber = tracing_subscriber::FmtSubscriber::builder()
-            .with_max_level(tracing::Level::TRACE)
-            .finish();
-        tracing::subscriber::set_global_default(subscriber)
-            .expect("setting default subscriber failed");
         app.init_resource::<TokioRuntime>()
             .add_plugins(EventsPlugin);
+        app.update();
     }
 }
 
