@@ -39,6 +39,11 @@ impl DiscordAppPlugin {
 
 impl Plugin for DiscordAppPlugin {
     fn build(&self, app: &mut App) {
+        let subscriber = tracing_subscriber::FmtSubscriber::builder()
+            .with_max_level(tracing::Level::TRACE)
+            .finish();
+        tracing::subscriber::set_global_default(subscriber)
+            .expect("setting default subscriber failed");
         app.init_resource::<TokioRuntime>()
             .add_plugins(EventsPlugin);
     }
