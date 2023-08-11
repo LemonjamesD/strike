@@ -7,16 +7,16 @@ pub mod prelude;
 pub mod secrets;
 pub mod types;
 
+use crate::events::GetGateway;
 use crate::events::{get_gateway, read_gateway};
+use crate::prelude::*;
 use anyhow::{anyhow, Result};
-use bevy_ecs::prelude::*;
 use deref_derive::Deref;
+use events::{read_events, setup_events, EventsPlugin, FlushEvents, GatewayEvents};
 use regex::Regex;
 use std::fmt::Display;
 use tokio::runtime::Runtime;
 
-#[derive(Resource, Default)]
-pub(crate) struct GetGateway(String);
 #[derive(Resource, Deref)]
 pub struct TokioRuntime(Runtime);
 impl Default for TokioRuntime {
@@ -25,74 +25,22 @@ impl Default for TokioRuntime {
     }
 }
 
-#[repr(usize)]
-pub enum Stage {
-    PreStartup = 0,
-    Startup = 1,
-    PostStartup = 2,
-    PreUpdate = 3,
-    Update = 4,
-    PostUpdate = 5,
-}
-
-pub struct DiscordApp {
+pub struct DiscordAppPlugin {
     token: String,
-    world: World,
-    schedules: [Schedule; 6],
 }
 
-impl DiscordApp {
-    /// Create the struct and add the token
+impl DiscordAppPlugin {
     pub fn new<T: GetDiscordToken>(token: T) -> Self {
         Self {
             token: token.get_token().unwrap(),
-            world: World::new(),
-            // [PreStartup, Startup, PostStartup, PreUpdate, Update, PostUpdate]
-            schedules: [
-                Schedule::default(),
-                Schedule::default(),
-                Schedule::default(),
-                Schedule::default(),
-                Schedule::default(),
-                Schedule::default(),
-            ],
         }
     }
-    /// Add system(s)
-    pub fn add_systems<M>(
-        &mut self,
-        stage: Stage,
-        systems: impl IntoSystemConfigs<M>,
-    ) -> &mut Self {
-        self.schedules[stage as usize].add_systems(systems);
-        self
-    }
-    /// Run the App
-    pub fn run(&mut self) {
-        // Setup some internal stuff
-        self.setup();
-        // Run the startup systems
-        self.schedules[0].run(&mut self.world);
-        self.schedules[1].run(&mut self.world);
-        self.schedules[2].run(&mut self.world);
-        // Run the update systems forever
-        loop {
-            self.schedules[3].run(&mut self.world);
-            self.schedules[4].run(&mut self.world);
-            self.schedules[5].run(&mut self.world);
-        }
-    }
-    /// Create the heartbeat loop and all that
-    pub(crate) fn setup(&mut self) {
-        let subscriber = tracing_subscriber::FmtSubscriber::builder()
-            .with_max_level(tracing::Level::TRACE)
-            .finish();
-        tracing::subscriber::set_global_default(subscriber)
-            .expect("setting default subscriber failed");
-        self.world.init_resource::<GetGateway>();
-        self.world.init_resource::<TokioRuntime>();
+}
 
-        self.add_systems(Stage::PreStartup, (get_gateway, read_gateway).chain());
+impl Plugin for DiscordAppPlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<TokioRuntime>()
+            .add_plugins(EventsPlugin);
     }
 }
 
