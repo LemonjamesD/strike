@@ -13,6 +13,7 @@ use crate::prelude::*;
 use anyhow::{anyhow, Result};
 use deref_derive::Deref;
 use events::EventsPlugin;
+use heartbeat::HeartbeatPlugin;
 use regex::Regex;
 use std::fmt::Display;
 use tokio::runtime::Runtime;
@@ -40,7 +41,7 @@ impl DiscordAppPlugin {
 impl Plugin for DiscordAppPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<TokioRuntime>()
-            .add_plugins(EventsPlugin);
+            .add_plugins((EventsPlugin, HeartbeatPlugin));
         app.update();
     }
 }
