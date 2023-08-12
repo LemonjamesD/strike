@@ -16,15 +16,6 @@ use events::EventsPlugin;
 use heartbeat::HeartbeatPlugin;
 use regex::Regex;
 use std::fmt::Display;
-use tokio::runtime::Runtime;
-
-#[derive(Resource, Deref)]
-pub struct TokioRuntime(Runtime);
-impl Default for TokioRuntime {
-    fn default() -> Self {
-        Self(Runtime::new().unwrap())
-    }
-}
 
 pub struct DiscordAppPlugin {
     token: String,
