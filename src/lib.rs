@@ -8,7 +8,6 @@ pub mod secrets;
 pub mod types;
 
 use crate::events::GetGateway;
-use crate::events::{get_gateway, read_gateway};
 use crate::prelude::*;
 use anyhow::{anyhow, Result};
 use deref_derive::Deref;
