@@ -1,6 +1,6 @@
 pub mod op_codes;
 pub use op_codes::*;
-use serde::de::Deserialize;
+use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 
 pub const API_URL: &'static str = "https://discord.com/api/v10";
