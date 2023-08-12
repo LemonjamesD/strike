@@ -16,11 +16,12 @@ impl<T: Serialize> SimpleSerialize for T {
 }
 
 pub trait SimpleDeserialize {
-    fn deserialize<'a, T: Deserialize<'a>>(&self) -> T;
+    fn deserialize<T: DeserializeOwned>(&self) -> T;
 }
 
 impl<T: ToString> SimpleDeserialize for T {
-    fn deserialize<'a, R: Deserialize<'a>>(&self) -> R {
-        serde_json::from_str::<R>(&self.to_string()).unwrap()
+    fn deserialize<R: DeserializeOwned>(&self) -> R {
+        let stringed = self.to_string().clone();
+        serde_json::from_str::<R>(&stringed).unwrap()
     }
 }
