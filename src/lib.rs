@@ -30,9 +30,10 @@ impl DiscordAppPlugin {
 
 impl Plugin for DiscordAppPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<TokioRuntime>()
-            .add_plugins((EventsPlugin, HeartbeatPlugin));
-        app.update();
+        app.add_plugins((EventsPlugin, HeartbeatPlugin));
+        loop {
+            app.update();
+        }
     }
 }
 
